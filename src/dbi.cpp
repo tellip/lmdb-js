@@ -44,7 +44,7 @@ DbiWrap::DbiWrap(const Napi::CallbackInfo& info) : ObjectWrap<DbiWrap>(info) {
 		}
 	}
 	info.This().As<Object>().Set("dbi", Number::New(info.Env(), this->dbi));
-	info.This().As<Object>().Set("address", Number::New(info.Env(), (size_t) this));
+	info.This().As<Object>().Set("address", Number::New(info.Env(), ((size_t)this) & 0x00FFFFFFFFFFFFFF));
 }
 
 

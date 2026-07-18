@@ -34,7 +34,7 @@ Compression::Compression(const CallbackInfo& info) : ObjectWrap<Compression>(inf
 	this->decompressSize = 0;
 	this->acceleration = 1;
 	this->compressionThreshold = compressionThreshold;
-	info.This().As<Object>().Set("address", Number::New(info.Env(), (double) (size_t) this));
+	info.This().As<Object>().Set("address", Number::New(info.Env(), ((size_t)this & 0x00FFFFFFFFFFFFFF)));
 }
 
 Napi::Value Compression::setBuffer(const CallbackInfo& info) {

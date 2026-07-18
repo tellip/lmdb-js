@@ -160,7 +160,7 @@ NAPI_FUNCTION(getAddress) {
 	void* data;
 	size_t length;
 	napi_get_arraybuffer_info(env, args[0], &data, &length);
-	napi_create_double(env, (double) (size_t) data, &returnValue);
+	napi_create_double(env, (double)(((size_t)data) & 0x00FFFFFFFFFFFFFF), &returnValue);
 	return returnValue;
 }
 
@@ -169,7 +169,7 @@ NAPI_FUNCTION(getBufferAddress) {
 	void* data;
 	size_t length;
 	napi_get_buffer_info(env, args[0], &data, &length);
-	napi_create_double(env, (double) (size_t) data, &returnValue);
+	napi_create_double(env, (double)(((size_t)data) & 0x00FFFFFFFFFFFFFF), &returnValue);
 	return returnValue;
 }
 
@@ -210,7 +210,7 @@ class ReadWorker : public AsyncWorker {
 			rc = mdb_cursor_get(cursor, &key, &data, MDB_SET_KEY);
 			MDB_env* env = mdb_txn_env(txn);
 			*(gets + 3) = data.mv_size;
-			*((double*)gets) = (double) (size_t) data.mv_data;
+			*((double*)gets) = (double)(((size_t)data.mv_data) & 0x00FFFFFFFFFFFFFF);
 			gets += (key.mv_size + 28) >> 2;
 			while (!rc) {
 				// access one byte from each of the pages to ensure they are in the OS cache,
@@ -312,7 +312,7 @@ void do_read(napi_env nenv, void* instruction_pointer) {
 #endif
 	 ) {
 		EnvWrap::toSharedBuffer(env, instruction, data);
-		*((double*)instruction) = (double) (size_t) data.mv_data;
+		*((double*)instruction) = (double)(((size_t)data.mv_data) & 0x00FFFFFFFFFFFFFF);
 	} else {
 		if (!buffersByWorker)
 			buffersByWorker = new std::unordered_map<void*, read_results_buffer_t*>;

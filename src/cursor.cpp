@@ -33,7 +33,7 @@ CursorWrap::CursorWrap(const CallbackInfo& info) : Napi::ObjectWrap<CursorWrap>(
 		throwLmdbError(info.Env(), rc);
 		return;
 	}
-	info.This().As<Object>().Set("address", Number::New(info.Env(), (size_t) this));
+	info.This().As<Object>().Set("address", Number::New(info.Env(), ((size_t)this) & 0x00FFFFFFFFFFFFFF));
 	this->cursor = cursor;
 	this->dw = dw;
 	this->txn = txn;

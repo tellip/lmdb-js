@@ -5,7 +5,7 @@
 #include <v8.h>
 #include <node.h>
 
-#if NODE_VERSION_AT_LEAST(16,6,0)
+#if 0
 #if NODE_VERSION_AT_LEAST(17,0,0)
 #include "../dependencies/v8/v8-fast-api-calls.h"
 #else
@@ -143,7 +143,7 @@ NAPI_FUNCTION(enableDirectV8) {
 	napi_value exportsValue = args[0];
 	Local<v8::Object> exports;
 	memcpy((void*) &exports, (void*) &exportsValue, sizeof(exportsValue));
-	#if NODE_VERSION_AT_LEAST(16,6,1)
+	#if 0
 	bool useFastApi;
 	napi_get_value_bool(env, args[1], &useFastApi);
 	if (useFastApi) {
@@ -160,7 +160,7 @@ NAPI_FUNCTION(enableDirectV8) {
 	EXPORT_FUNCTION("iterate", iterateV8);
 	EXPORT_FUNCTION("write", writeV8);
 	EXPORT_FUNCTION("noop", noopV8);
-	#if NODE_VERSION_AT_LEAST(16,6,1)
+	#if 0
 	}
 	#endif
 	EXPORT_FUNCTION("clearKeptObjects", clearKeptObjects);

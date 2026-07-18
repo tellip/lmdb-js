@@ -76,7 +76,7 @@ EnvWrap::EnvWrap(const CallbackInfo& info) : ObjectWrap<EnvWrap>(info) {
 	this->lastReaderCheck = 0;
 	this->writingLock = new pthread_mutex_t;
 	this->writingCond = new pthread_cond_t;
-	info.This().As<Object>().Set("address", Number::New(info.Env(), (size_t) this));
+	info.This().As<Object>().Set("address", Number::New(info.Env(), ((size_t)this) & 0x00FFFFFFFFFFFFFF));
 	pthread_mutex_init(this->writingLock, nullptr);
 	cond_init(this->writingCond);
 }
@@ -466,7 +466,7 @@ NAPI_FUNCTION(EnvWrap::onExit) {
 }
 NAPI_FUNCTION(getEnvsPointer) {
 	napi_value returnValue;
-	napi_create_double(env, (double) (size_t) EnvWrap::envTracking, &returnValue);
+	napi_create_double(env, (double)(((size_t)EnvWrap::envTracking) & 0x00FFFFFFFFFFFFFF), &returnValue);
 	if (!EnvWrap::sharedBuffers) {
 		EnvWrap::sharedBuffers = new js_buffers_t;
 		EnvWrap::sharedBuffers->nextId = 0;
@@ -864,11 +864,11 @@ Napi::Value EnvWrap::info(const CallbackInfo& info) {
 	mdb_env_get_flags(env, &envFlags);
 	if (envFlags & MDB_TRACK_METRICS) {
 		MDB_metrics* metrics = (MDB_metrics*) mdb_env_get_metrics(this->env);
-		stats.Set("timeStartTxns", Number::New(info.Env(), (double) metrics->time_start_txns / TICKS_PER_SECOND));
-		stats.Set("timeDuringTxns", Number::New(info.Env(), (double) metrics->time_during_txns / TICKS_PER_SECOND));
-		stats.Set("timePageFlushes", Number::New(info.Env(), (double) metrics->time_page_flushes / TICKS_PER_SECOND));
-		stats.Set("timeSync", Number::New(info.Env(), (double) metrics->time_sync / TICKS_PER_SECOND));
-		stats.Set("timeTxnWaiting", Number::New(info.Env(), (double) timeTxnWaiting / TICKS_PER_SECOND));
+		stats.Set("timeStartTxns", Number::New(info.Env(), ((size_t)metrics->time_start_txns / TICKS_PER_SECOND) & 0x00FFFFFFFFFFFFFF));
+		stats.Set("timeDuringTxns", Number::New(info.Env(), ((size_t)metrics->time_during_txns / TICKS_PER_SECOND) & 0x00FFFFFFFFFFFFFF));
+		stats.Set("timePageFlushes", Number::New(info.Env(), ((size_t)metrics->time_page_flushes / TICKS_PER_SECOND) & 0x00FFFFFFFFFFFFFF));
+		stats.Set("timeSync", Number::New(info.Env(), ((size_t)metrics->time_sync / TICKS_PER_SECOND) & 0x00FFFFFFFFFFFFFF));
+		stats.Set("timeTxnWaiting", Number::New(info.Env(), ((size_t)timeTxnWaiting / TICKS_PER_SECOND) & 0x00FFFFFFFFFFFFFF));
 		stats.Set("txns", Number::New(info.Env(), metrics->txns));
 		stats.Set("pageFlushes", Number::New(info.Env(), metrics->page_flushes));
 		stats.Set("pagesWritten", Number::New(info.Env(), metrics->pages_written));

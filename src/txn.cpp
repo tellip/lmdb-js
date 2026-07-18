@@ -91,7 +91,7 @@ TxnWrap::TxnWrap(const Napi::CallbackInfo& info) : ObjectWrap<TxnWrap>(info) {
 	this->flags = flags;
 	this->ew = ew;
 	this->env = ew->env;
-	info.This().As<Object>().Set("address", Number::New(info.Env(), (size_t) this));
+	info.This().As<Object>().Set("address", Number::New(info.Env(), ((size_t)this) & 0x00FFFFFFFFFFFFFF));
 }
 
 TxnWrap::~TxnWrap() {

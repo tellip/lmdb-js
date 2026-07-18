@@ -56,7 +56,7 @@ typedef size_t mdb_size_t;
 #define GET_INT32_ARG(target, position) napi_get_value_int32(env, args[position], (int32_t*) &target)
 #define GET_INT64_ARG(position)\
     int64_t i64;\
-    napi_get_value_int64(env, args[position], &i64);
+    napi_get_value_int64(env, args[position], &i64); i64 = i64 & 0x00FFFFFFFFFFFFFF;
 #define RETURN_UINT32(value) { napi_create_uint32(env, value, &returnValue); return returnValue; }
 #define RETURN_INT32(value) { napi_create_int32(env, value, &returnValue); return returnValue; }
 #define RETURN_UNDEFINED { napi_get_undefined(env, &returnValue); return returnValue; }
